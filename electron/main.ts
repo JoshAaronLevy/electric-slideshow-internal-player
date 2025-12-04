@@ -26,8 +26,17 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(process.env.APP_ROOT, 
 
 const WINDOW_TITLE = 'Electric Slideshow Internal Player'
 const DEFAULT_WINDOW_DIMENSIONS = { width: 1024, height: 768 }
+const IPC_TOKEN_CHANNEL = 'internal-player:set-token'
 
 let win: BrowserWindow | null
+
+const envSpotifyToken = process.env.SPOTIFY_ACCESS_TOKEN?.trim()
+
+if (envSpotifyToken) {
+  console.log('[main] SPOTIFY_ACCESS_TOKEN detected; will forward to renderer after load')
+} else {
+  console.log('[main] SPOTIFY_ACCESS_TOKEN not set; renderer will rely on manual token input')
+}
 
 function createWindow() {
   win = new BrowserWindow({
@@ -58,6 +67,10 @@ function createWindow() {
   // Test active push message to Renderer-process.
   win.webContents.on('did-finish-load', () => {
     win?.webContents.send('main-process-message', (new Date).toLocaleString())
+
+    if (envSpotifyToken) {
+      win?.webContents.send(IPC_TOKEN_CHANNEL, envSpotifyToken)
+    }
   })
 
   win.webContents.on('did-fail-load', (_event, errorCode, errorDescription) => {
