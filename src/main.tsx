@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
 
+// TODO(Stage 2): attach INTERNAL_PLAYER global before rendering.
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <App />
