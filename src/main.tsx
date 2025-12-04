@@ -2,8 +2,11 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
+import { internalPlayerApi } from './internalPlayer/internalPlayerApi'
 
-// TODO(Stage 2): attach INTERNAL_PLAYER global before rendering.
+window.INTERNAL_PLAYER = internalPlayerApi
+console.log('[internal-player] INTERNAL_PLAYER API is ready')
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <App />
