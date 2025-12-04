@@ -127,7 +127,7 @@ Overall shape I’d like:
 
 ### Stage 0 – Plan Only
 
-**Goal:** Produce a concise but detailed implementation plan doc (`INTERNAL_PLAYER_PLAN.md`) in this repo that I can commit and refer to.
+**Goal:** Produce a concise but detailed implementation plan doc (`INTERNAL_PLAYER_IMPLEMENTATION.md`) in this repo that I can commit and refer to.
 
 Plan should include:
 
@@ -172,7 +172,7 @@ Plan should include:
      * Player `ready` event and deviceId
      * `player_state_changed` events (at least basic info: track name, playing/paused).
 
-> **For Stage 0:** Do not modify any code. Just produce the plan in a new `INTERNAL_PLAYER_PLAN.md` file.
+> **For Stage 0:** Do not modify any code. Just produce the plan in a new `INTERNAL_PLAYER_IMPLEMENTATION.md` file.
 
 ---
 
@@ -362,7 +362,7 @@ This should still work alongside the manual UI and DevTools access.
 
 1. **First response:**
 
-   * Generate the `INTERNAL_PLAYER_PLAN.md` **implementation plan only** according to the stages above.
+   * Generate the `INTERNAL_PLAYER_IMPLEMENTATION.md` **implementation plan only** according to the stages above.
    * Do *not* modify any code yet.
    * Include a short checklist for each stage.
 
