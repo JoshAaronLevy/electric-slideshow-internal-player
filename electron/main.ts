@@ -24,26 +24,68 @@ export const RENDERER_DIST = path.join(process.env.APP_ROOT, 'dist')
 
 process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(process.env.APP_ROOT, 'public') : RENDERER_DIST
 
+const WINDOW_TITLE = 'Electric Slideshow Internal Player'
+const DEFAULT_WINDOW_DIMENSIONS = { width: 1024, height: 768 }
+const IPC_TOKEN_CHANNEL = 'internal-player:set-token'
+
 let win: BrowserWindow | null
+
+const envSpotifyToken = process.env.SPOTIFY_ACCESS_TOKEN?.trim()
+
+if (envSpotifyToken) {
+  console.log('[main] SPOTIFY_ACCESS_TOKEN detected; will forward to renderer after load')
+} else {
+  console.log('[main] SPOTIFY_ACCESS_TOKEN not set; renderer will rely on manual token input')
+}
 
 function createWindow() {
   win = new BrowserWindow({
+    title: WINDOW_TITLE,
+    width: DEFAULT_WINDOW_DIMENSIONS.width,
+    height: DEFAULT_WINDOW_DIMENSIONS.height,
+    minWidth: 900,
+    minHeight: 600,
+    show: false,
     icon: path.join(process.env.VITE_PUBLIC, 'electron-vite.svg'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.mjs'),
     },
   })
 
+  console.log('[main] BrowserWindow created')
+
+  win.once('ready-to-show', () => {
+    console.log('[main] window ready to show')
+    win?.show()
+  })
+
+  win.on('closed', () => {
+    console.log('[main] window closed')
+    win = null
+  })
+
   // Test active push message to Renderer-process.
   win.webContents.on('did-finish-load', () => {
     win?.webContents.send('main-process-message', (new Date).toLocaleString())
+
+    if (envSpotifyToken) {
+      win?.webContents.send(IPC_TOKEN_CHANNEL, envSpotifyToken)
+    }
+  })
+
+  win.webContents.on('did-fail-load', (_event, errorCode, errorDescription) => {
+    console.error('[main] renderer failed to load', { errorCode, errorDescription })
   })
 
   if (VITE_DEV_SERVER_URL) {
-    win.loadURL(VITE_DEV_SERVER_URL)
+    win.loadURL(VITE_DEV_SERVER_URL).catch((error) => {
+      console.error('[main] failed to load dev server URL', error)
+    })
   } else {
     // win.loadFile('dist/index.html')
-    win.loadFile(path.join(RENDERER_DIST, 'index.html'))
+    win.loadFile(path.join(RENDERER_DIST, 'index.html')).catch((error) => {
+      console.error('[main] failed to load production HTML', error)
+    })
   }
 }
 
@@ -65,4 +107,7 @@ app.on('activate', () => {
   }
 })
 
-app.whenReady().then(createWindow)
+app.whenReady().then(() => {
+  console.log('[main] app ready, creating window')
+  createWindow()
+})
