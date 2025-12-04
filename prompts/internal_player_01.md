@@ -1,5 +1,7 @@
 I’ve reviewed the `INTERNAL_PLAYER_PLAN.md` you generated and I’m ready to implement **Stage 1 – Scaffolding Cleanup** in this repo.
 
+**NOTE**: I also added the front-end repo `Electric Slideshow` and the API repo `electric-slideshow-server` to this workspace in case you need to see any code there for reference in order to implement the code for this internal electron player. However, if any code changes are needed in those other two repos, please do not implement them yet. Just focus on the internal player repo for now, and let me know if you think any changes will be needed in those other two repos later on.
+
 Important context & constraints:
 
 - This repo was scaffolded with **electron-vite** using the **React template**.
