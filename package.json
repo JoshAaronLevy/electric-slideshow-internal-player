@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "install:clean": "rm -rf node_modules pnpm-lock.yaml && pnpm install",
+    "build:clean": "rm -rf dist-electron dist && pnpm build",
     "build": "tsc && vite build && electron-builder",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
@@ -24,10 +26,16 @@
     "eslint-plugin-react-refresh": "^0.4.5",
     "typescript": "^5.2.2",
     "vite": "^5.1.6",
-    "electron": "^30.0.1",
+    "electron": "github:castlabs/electron-releases#v37.10.3+wvcus",
     "electron-builder": "^24.13.3",
     "vite-plugin-electron": "^0.28.6",
     "vite-plugin-electron-renderer": "^0.14.5"
   },
-  "main": "dist-electron/main.js"
+  "main": "dist-electron/main.js",
+  "build": {
+    "electronVersion": "37.10.3+wvcus",
+    "electronDownload": {
+      "mirror": "https://github.com/castlabs/electron-releases/releases/download/v"
+    }
+  }
 }

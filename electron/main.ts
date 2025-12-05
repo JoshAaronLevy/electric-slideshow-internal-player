@@ -41,6 +41,12 @@ if (envSpotifyToken) {
   console.log('[main] SPOTIFY_ACCESS_TOKEN not set; renderer will rely on manual token input')
 }
 
+console.log('[main] Runtime versions', {
+  electron: process.versions.electron,
+  chrome: process.versions.chrome,
+  node: process.versions.node,
+})
+
 function readManifest(manifestPath: string): string | null {
   try {
     const manifestRaw = fs.readFileSync(manifestPath, 'utf-8')
@@ -117,16 +123,29 @@ function detectWidevineFromChrome(): WidevineConfig | null {
   return null
 }
 
-const widevineConfig = detectWidevineFromChrome()
-if (widevineConfig) {
-  app.commandLine.appendSwitch('widevine-cdm-path', widevineConfig.cdmPath)
-  app.commandLine.appendSwitch('widevine-cdm-version', widevineConfig.version)
-  console.log('[main] Widevine configured', {
-    path: widevineConfig.cdmPath,
-    version: widevineConfig.version,
-  })
+const chromeWidevineOptIn = (() => {
+  const raw = process.env.USE_CHROME_WIDEVINE?.trim().toLowerCase()
+  return raw === '1' || raw === 'true'
+})()
+
+if (chromeWidevineOptIn) {
+  try {
+    const widevineConfig = detectWidevineFromChrome()
+    if (widevineConfig) {
+      app.commandLine.appendSwitch('widevine-cdm-path', widevineConfig.cdmPath)
+      app.commandLine.appendSwitch('widevine-cdm-version', widevineConfig.version)
+      console.log('[main] Optional Chrome Widevine configured', {
+        path: widevineConfig.cdmPath,
+        version: widevineConfig.version,
+      })
+    } else {
+      console.warn('[main] Optional Chrome Widevine fallback not available; continuing with bundled Widevine')
+    }
+  } catch (error) {
+    console.warn('[main] Optional Chrome Widevine fallback failed; continuing with bundled Widevine', error)
+  }
 } else {
-  console.warn('[main] Widevine not configured; Spotify Web Playback SDK will fail with EME errors')
+  console.log('[main] Skipping Chrome Widevine fallback; relying on bundled Widevine from castLabs Electron')
 }
 
 // Allow autoplay without user gesture for headless/hidden playback.
