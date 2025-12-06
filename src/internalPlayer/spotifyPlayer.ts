@@ -18,9 +18,10 @@ function attachErrorHandlers(
   handlers: SpotifyPlayerLifecycleHandlers,
 ) {
   const relay = (label: string) => (payload: SpotifyErrorPayload) => {
-    const message = `[internal-player] ${label}: ${payload.message}`
-    console.error(message)
-    handlers.onPlayerError(payload.message)
+    const message = payload.message ?? 'Unknown error'
+    const prefixed = `[internal-player] ${label}: ${message}`
+    console.error(prefixed, payload)
+    handlers.onPlayerError(message)
   }
 
   instance.addListener('initialization_error', relay('initialization_error'))
@@ -34,7 +35,7 @@ export async function initializeSpotifyPlayer(
   handlers: SpotifyPlayerLifecycleHandlers,
 ): Promise<void> {
   currentAccessToken = token
-  console.log('[internal-player] setAccessToken invoked')
+  console.log('[internal-player] initializing Spotify Web Playback SDK player')
 
   await loadSpotifySdk()
   assertSpotifyNamespace(window.Spotify)
@@ -62,12 +63,12 @@ export async function initializeSpotifyPlayer(
   })
 
   player.addListener('ready', ({ device_id }) => {
-    console.log('[internal-player] player ready', device_id)
+    console.log('[internal-player] Spotify player ready', { deviceId: device_id })
     handlers.onReady(device_id)
   })
 
   player.addListener('not_ready', ({ device_id }) => {
-    console.warn('[internal-player] player not ready', device_id)
+    console.warn('[internal-player] Spotify player not ready', { deviceId: device_id })
     handlers.onNotReady(device_id)
   })
 

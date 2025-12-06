@@ -6,10 +6,7 @@ import {
   SpotifyPlayerLifecycleHandlers,
 } from './types'
 import { disposeSpotifyPlayer, initializeSpotifyPlayer, refreshAccessToken } from './spotifyPlayer'
-<<<<<<< HEAD
-=======
 import { verifyWidevineSupport } from './checkWidevine'
->>>>>>> dev
 
 const defaultStatus: InternalPlayerStatus = {
   initialized: false,
@@ -80,16 +77,26 @@ async function setAccessToken(token: string): Promise<void> {
     throw new Error(errorMessage)
   }
 
-  console.log('[internal-player] INTERNAL_PLAYER.setAccessToken invoked')
+  const tokenLength = trimmed.length
+  const tokenSnippet = `${trimmed.slice(0, 8)}...${trimmed.slice(-8)}`
+  console.log('[internal-player] INTERNAL_PLAYER.setAccessToken invoked', {
+    length: tokenLength,
+    snippet: tokenSnippet,
+  })
+
   refreshAccessToken(trimmed)
   mutateStatus({ initialized: true, lastError: null })
 
   try {
-<<<<<<< HEAD
-=======
     // Fail fast if Widevine/EME is not available before touching the SDK.
     await verifyWidevineSupport()
->>>>>>> dev
+    await verifyWidevineSupport()
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+    console.warn(`[internal-player] Widevine preflight failed, continuing anyway: ${message}`)
+  }
+
+  try {
     await initializeSpotifyPlayer(trimmed, lifecycleHandlers)
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Failed to initialize Spotify player'

@@ -18,5 +18,5 @@ electron.contextBridge.exposeInMainWorld("ipcRenderer", {
     return electron.ipcRenderer.invoke(channel, ...omit);
   }
   // You can expose other APTs you need here.
-  // ...
+  // TODO(Stage 4): expose a minimal token IPC surface once env-driven injection lands.
 });
