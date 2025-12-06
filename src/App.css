@@ -46,7 +46,6 @@
   margin-top: 0;
 }
 
-<<<<<<< HEAD
 .status-panel__header {
   display: flex;
   align-items: center;
@@ -55,8 +54,6 @@
   flex-wrap: wrap;
 }
 
-=======
->>>>>>> 179f995 (Implemented stage 1)
 .status-message {
   font-size: 1rem;
   font-weight: 600;
@@ -79,7 +76,6 @@
 .status-pill--pending {
   background: rgba(244, 162, 97, 0.2);
   color: #b3541e;
-<<<<<<< HEAD
 }
 
 .status-pill--ok {
@@ -180,6 +176,4 @@
 
 .feedback--success {
   color: #1f7a4c;
-=======
->>>>>>> 179f995 (Implemented stage 1)
 }

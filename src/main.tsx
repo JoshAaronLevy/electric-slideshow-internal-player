@@ -38,7 +38,6 @@ if (import.meta.hot) {
   })
 }
 
-// TODO(Stage 2): attach INTERNAL_PLAYER global before rendering.
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <App />
