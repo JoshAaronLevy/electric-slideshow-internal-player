@@ -38,21 +38,19 @@ if (import.meta.hot) {
   })
 }
 
+// TODO(Stage 2): attach INTERNAL_PLAYER global before rendering.
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <App />
   </React.StrictMode>,
 )
-<<<<<<< HEAD
 
 // Use contextBridge
 window.ipcRenderer.on('main-process-message', (_event, message) => {
   console.log(message)
 })
-=======
 
 // Use contextBridge
 window.ipcRenderer.on('main-process-message', (_event, message) => {
   console.log(message)
 })
->>>>>>> a174820 (Initial commit)
